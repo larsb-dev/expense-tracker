@@ -1,12 +1,1 @@
-date,category,description,amount
-2024-06-01,Groceries,Supermarket shopping,54.23
-2024-06-02,Transport,Bus ticket,2.50
-2024-06-03,Utilities,Electricity bill,35.00
-2024-06-04,Entertainment,Movie night,12.00
-2024-06-05,Health,Pharmacy purchase,18.75
-2024-06-06,Food,Coffee shop,4.80
-2024-06-07,Shopping,Clothes,45.99
-2024-06-08,Subscriptions,Music streaming,9.99
-2024-06-09,Education,Online course,29.00
-2024-06-10,Travel,Taxi ride,16.40
-2025-08-26,Apple Juice,sa,d
+id,date,category,description,amount
