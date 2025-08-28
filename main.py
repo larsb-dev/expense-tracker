@@ -6,49 +6,10 @@ import textwrap
 
 from tabulate import tabulate
 
-def load_expenses():
-    expenses = []
-    with open("expenses.csv", "r", encoding="utf-8", newline="") as csvfile:
-        reader = DictReader(csvfile, delimiter=',')
-        for row in reader:
-            expenses.append(row)
-    return expenses
 
-def get_previous_id(expenses):
-    return int(expenses[-1]["id"]) if expenses else 0
 
-def add_expense():
-    expenses = load_expenses()
-    id = get_previous_id(expenses) + 1
 
-    date = datetime.date.today().isoformat()
-    category = input("What expense category do you wish to add? ")
-    description = input("What expense do you wish to add? ")
 
-    while True:
-        try:
-            amount = float(input("What amount do you wish to add? "))
-            break
-        except ValueError:
-            print("Please enter a valid number for amount.")
-
-    expense = {
-        "id": id,
-        "date": date,
-        "category": category,
-        "description": description,
-        "amount": amount
-    }
-
-    filename = "expenses.csv"
-    file_exists = os.path.isfile(filename)
-
-    with open(filename, "a", encoding="utf-8", newline="") as csvfile:
-        fieldnames = ["id", "date", "category", "description", "amount"]
-        writer = DictWriter(csvfile, fieldnames=fieldnames)
-        if not file_exists or os.path.getsize(filename) == 0:
-            writer.writeheader()
-        writer.writerow(expense)
 
 
 
@@ -100,8 +61,8 @@ def main():
     #                 end = True
     #     except FileNotFoundError:
     #         print("No expenses found")
-        add_expense()
-        print(get_previous_id(load_expenses()))
+        expenses = load_expenses()
+        add_expense(expenses)
 
 if __name__ == "__main__":
     main()
