@@ -39,7 +39,7 @@ class ExpenseTracker:
                 amount = float(input("What amount do you wish to add? "))
                 break
             except ValueError:
-                print("\nPlease enter a valid number for amount.")
+                print("Please enter a valid number for amount.")
         expense = Expense(self.get_previous_id() + 1, date, category, description, amount)
         self.expenses.append(expense)
         self.save_expenses()
