@@ -1,7 +1,7 @@
 from ExpenseTracker import ExpenseTracker
 
 def main():
-    expense_tracker = ExpenseTracker()
+    expense_tracker = ExpenseTracker("expenses.csv")
     try:
         expense_tracker.load_expenses()
         expense_tracker.add_expense()

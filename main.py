@@ -13,23 +13,7 @@ from tabulate import tabulate
 
 
 
-def print_expenses(expenses):
-    if not expenses:
-        print("No expenses to show.")
-        return
-    headers = ["date", "category", "description", "amount"]
-    rows = [[expense["date"], expense["category"], expense["description"], expense["amount"]] for expense in expenses]
-    print(tabulate(rows, headers=headers, tablefmt="grid"))
 
-def list_all_expenses(expenses):
-    print_expenses(expenses)
-
-def list_expenses_by_category(expenses, category):
-    if not category:
-        print_expenses(expenses)
-    else:
-        filtered = [expense for expense in expenses if expense["category"].lower() in category.lower()]
-        print_expenses(filtered)
 
 def main():
     # end = False
