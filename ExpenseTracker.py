@@ -2,33 +2,38 @@ from Expense import Expense
 from csv import DictReader, DictWriter
 import datetime
 from tabulate import tabulate
+import os
+from dotenv import load_dotenv
+import gspread
 
 class ExpenseTracker:
 
-    def __init__(self, filepath):
-        self.filepath = filepath
+    def __init__(self, cloud_repo):
         self.expenses = []
+        self.cloud_repo = cloud_repo
 
-    def load_expenses(self):
-        with open(self.filepath, "r", encoding="utf-8", newline="") as csvfile:
-            reader = DictReader(csvfile, delimiter=',')
-            for expense in reader:
-                expense_obj = Expense(
-                    int(expense["id"]),
-                    expense["date"],
-                    expense["category"],
-                    expense["description"],
-                    float(expense["amount"])
-                )
-                self.expenses.append(expense_obj)
+    # def load_expenses(self):
+    #     worksheet = self.cloud_repo.get_worksheet()
+    #     records = worksheet.get_all_records()
+    #     for record in records:
+    #         expense_obj = Expense(
+    #             int(record["id"]),
+    #             record["date"],
+    #             record["category"],
+    #             record["description"],
+    #             float(record["amount"])
+    #         )
+    #         self.expenses.append(expense_obj)
 
-    def save_expenses(self):
-        fieldnames = ["id", "date", "category", "description", "amount"]
-        with open(self.filepath, "w", encoding="utf-8", newline="") as csvfile:
-            writer = DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            for expense in self.expenses:
-                writer.writerow(expense.__dict__)
+    def save_expense(self, expense):
+        worksheet = self.cloud_repo.get_worksheet()
+        worksheet.append_row([
+            expense.id,
+            expense.date,
+            expense.category,
+            expense.description,
+            expense.amount
+        ])
 
     def add_expense(self):
         date = datetime.date.today().isoformat()
@@ -41,8 +46,7 @@ class ExpenseTracker:
             except ValueError:
                 print("Please enter a valid number for amount.")
         expense = Expense(self.get_previous_id() + 1, date, category, description, amount)
-        self.expenses.append(expense)
-        self.save_expenses()
+        self.save_expense(expense)
 
     def list_all_expenses(self):
         self.display_expenses(self.expenses)
@@ -65,17 +69,21 @@ class ExpenseTracker:
                         break
                     except ValueError:
                         print("Please enter a valid number for amount.")
-        self.save_expenses()
+        self.save_expense()
 
     def delete_expense(self, id):
         for expense in self.expenses:
             if expense.id == id:
                 self.expenses.remove(expense)
-                self.save_expenses()
+                self.save_expense()
                 break
 
     def get_previous_id(self):
-        return int(self.expenses[-1].id) if self.expenses else 0
+        worksheet = self.cloud_repo.get_worksheet()
+        records = worksheet.get_all_records()
+        if not records:
+            return 0
+        return max(int(record["id"]) for record in records)
 
     def display_expenses(self, expenses):
         if not expenses:
