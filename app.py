@@ -1,4 +1,4 @@
-from RemoteExpenseTracker import RemoteExpenseTracker
+from ExpenseTracker import ExpenseTracker
 from CloudRepository import CloudRepository
 import textwrap
 
@@ -13,7 +13,7 @@ def input_number(prompt):
 def main():
     try:
         cloud_repo = CloudRepository()
-        remote_expense_tracker = RemoteExpenseTracker(cloud_repo)
+        expense_tracker = ExpenseTracker(cloud_repo)
         cloud_repo.authenticate()
         cloud_repo.load_sheets()
     except ValueError as e:
@@ -35,16 +35,16 @@ def main():
             choice = input("What would you like to do? ")
             match choice:
                 case "1":
-                    remote_expense_tracker.add_expense()
+                    expense_tracker.add_expense()
                 case "2":
                     print("")
-                    remote_expense_tracker.list_all_expenses()
+                    expense_tracker.list_all_expenses()
                 case "3":
                     id = input_number("What expense do you wish to edit? ")
-                    remote_expense_tracker.edit_expense(id)
+                    expense_tracker.edit_expense(id)
                 case "4":
                     id = input_number("What expense do you wish to delete? ")
-                    remote_expense_tracker.delete_expense(id)
+                    expense_tracker.delete_expense(id)
                 case "5":
                     end = True
         except Exception as e:

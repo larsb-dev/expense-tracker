@@ -2,7 +2,7 @@ from Expense import Expense
 import datetime
 from tabulate import tabulate
 
-class RemoteExpenseTracker:
+class ExpenseTracker:
 
     def __init__(self, cloud_repo):
         self.cloud_repo = cloud_repo
