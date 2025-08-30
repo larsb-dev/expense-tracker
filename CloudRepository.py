@@ -1,26 +1,35 @@
 import os
 from dotenv import load_dotenv
 import gspread
+from google.auth.exceptions import DefaultCredentialsError, RefreshError
+from gspread import WorksheetNotFound, SpreadsheetNotFound
+from gspread.exceptions import APIError
 
 class CloudRepository:
 
     def __init__(self):
         load_dotenv()
-        self.cred_path = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
+        self.credentials = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
         self.sheet_id = os.getenv("SPREADSHEET_ID")
-        if not self.cred_path:
-            raise RuntimeError("Missing GOOGLE_SHEETS_CREDENTIALS")
-        if not self.sheet_id:
-            raise RuntimeError("Missing SPREADSHEET_ID")
-        self.client = gspread.service_account(filename=self.cred_path)
-        self.spreadsheet = self.client.open_by_key(self.sheet_id)
-        self.worksheet = self.spreadsheet.get_worksheet(0)
+        self.client = None
+        self.spreadsheet = None
+        self.worksheets = []
 
-    def get_spreadsheet(self):
-        return self.spreadsheet
+    def authenticate(self):
+        try:
+            self.client = gspread.service_account(filename=self.credentials)
+        except RefreshError:
+            raise RefreshError("Can't connect to Google Sheets API due to wrong credentials")
 
-    def get_worksheet(self):
-        return self.worksheet
+    def load_sheets(self):
+        try:
+            self.spreadsheet = self.client.open_by_key(self.sheet_id)
+            self.worksheets = self.spreadsheet.worksheets()
+        except SpreadsheetNotFound:
+            raise SpreadsheetNotFound(f"Spreadsheet with the id {self.sheet_id} not found")
 
-    def set_worksheet(self, id):
-        self.worksheet = self.spreadsheet.get_worksheet(id)
+    def get_worksheet(self, id):
+        for worksheet in self.worksheets:
+            if id == self.worksheets.index(worksheet):
+                return self.worksheets[id]
+        raise WorksheetNotFound("Worksheet not found.")

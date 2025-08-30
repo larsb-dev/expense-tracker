@@ -2,9 +2,7 @@ from Expense import Expense
 from csv import DictReader, DictWriter
 import datetime
 from tabulate import tabulate
-import os
 from dotenv import load_dotenv
-import gspread
 
 class RemoteExpenseTracker:
 
@@ -58,6 +56,7 @@ class RemoteExpenseTracker:
                     except ValueError:
                         print("Please enter a valid number for amount.")
                 worksheet.update([[category, description, amount]], f'C{idx}:E{idx}')
+                break
         else:
             print("Expense not found.")
 
