@@ -1,8 +1,6 @@
 from Expense import Expense
-from csv import DictReader, DictWriter
 import datetime
 from tabulate import tabulate
-from dotenv import load_dotenv
 
 class RemoteExpenseTracker:
 
@@ -10,7 +8,7 @@ class RemoteExpenseTracker:
         self.cloud_repo = cloud_repo
 
     def save_expense(self, expense):
-        worksheet = self.cloud_repo.get_worksheet()
+        worksheet = self.cloud_repo.get_worksheet(0)
         worksheet.append_row([
             expense.id,
             expense.date,
@@ -33,7 +31,7 @@ class RemoteExpenseTracker:
         self.save_expense(expense)
 
     def list_all_expenses(self):
-        worksheet = self.cloud_repo.get_worksheet()
+        worksheet = self.cloud_repo.get_worksheet(0)
         records = worksheet.get_all_records()
         if not records:
             print("No expenses to show.")
@@ -43,10 +41,10 @@ class RemoteExpenseTracker:
         print(tabulate(rows, headers=headers, tablefmt="grid"))
 
     def edit_expense(self, id):
-        worksheet = self.cloud_repo.get_worksheet()
+        worksheet = self.cloud_repo.get_worksheet(0)
         records = worksheet.get_all_records()
         for idx, record in enumerate(records, start=2):
-            if str(record["id"]) == str(id):
+            if record["id"] == id:
                 category = input("What expense category do you wish to edit? ")
                 description = input("What expense do you wish to edit? ")
                 while True:
@@ -57,19 +55,19 @@ class RemoteExpenseTracker:
                         print("Please enter a valid number for amount.")
                 worksheet.update([[category, description, amount]], f'C{idx}:E{idx}')
                 break
-        else:
-            print("Expense not found.")
+        print(f"An expense with id {id} was not found.")
 
     def delete_expense(self, id):
-        worksheet = self.cloud_repo.get_worksheet()
+        worksheet = self.cloud_repo.get_worksheet(0)
         records = worksheet.get_all_records()
         for idx, expense in enumerate(records, start=2):
-            if str(expense["id"]) == str(id):
+            if id == expense["id"]:
                 worksheet.delete_rows(idx)
                 break
+        print(f"An expense with id {id} was not found.")
 
     def get_previous_id(self):
-        worksheet = self.cloud_repo.get_worksheet()
+        worksheet = self.cloud_repo.get_worksheet(0)
         records = worksheet.get_all_records()
         if not records:
             return 0

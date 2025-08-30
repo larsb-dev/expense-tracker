@@ -1,9 +1,8 @@
-import os
 from dotenv import load_dotenv
+import os
 import gspread
-from google.auth.exceptions import DefaultCredentialsError, RefreshError
-from gspread import WorksheetNotFound, SpreadsheetNotFound
-from gspread.exceptions import APIError
+from google.auth.exceptions import RefreshError
+from gspread import SpreadsheetNotFound, WorksheetNotFound
 
 class CloudRepository:
 
