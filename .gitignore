@@ -4,4 +4,6 @@
 secrets/
 .env
 __pycache__/
-docs/class-diagram.puml
+docs/
+docs/class-diagram.png!
+docs/thumbnail.jpg!
